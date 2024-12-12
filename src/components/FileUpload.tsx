@@ -10,14 +10,15 @@ interface FileUploadProps {
 export function FileUpload({ onContentParsed }: FileUploadProps) {
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      try {
-        const file = acceptedFiles[0];
-        const content = await parseFile(file);
-        onContentParsed(content.text, file.name);
-        toast.success('File uploaded successfully!');
-      } catch (error) {
-        toast.error('Error processing file');
-        console.error('Error processing file:', error);
+      for (const file of acceptedFiles) {
+        try {
+          const content = await parseFile(file);
+          onContentParsed(content.text, file.name);
+          toast.success('File uploaded successfully!');
+        } catch (error) {
+          toast.error('Error processing file');
+          console.error('Error processing file:', error);
+        }
       }
     },
     [onContentParsed]
@@ -29,7 +30,7 @@ export function FileUpload({ onContentParsed }: FileUploadProps) {
       'text/plain': ['.txt'],
       'application/pdf': ['.pdf'],
     },
-    multiple: false,
+    multiple: true,
   });
 
   return (
