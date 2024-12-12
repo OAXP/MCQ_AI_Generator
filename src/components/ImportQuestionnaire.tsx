@@ -10,21 +10,22 @@ interface ImportQuestionnaireProps {
 export function ImportQuestionnaire({ onImport }: ImportQuestionnaireProps) {
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      try {
-        const file = acceptedFiles[0];
-        const text = await file.text();
-        const questionnaire = JSON.parse(text);
-        
-        // Basic validation
-        if (!questionnaire.questions || !Array.isArray(questionnaire.questions)) {
-          throw new Error('Invalid questionnaire format');
+      for (const file of acceptedFiles) {
+        try {
+          const text = await file.text();
+          const questionnaire = JSON.parse(text);
+
+          // Basic validation
+          if (!questionnaire.questions || !Array.isArray(questionnaire.questions)) {
+            throw new Error('Invalid questionnaire format');
+          }
+
+          onImport(questionnaire);
+          toast.success('Questionnaire imported successfully!');
+        } catch (error) {
+          toast.error('Error importing questionnaire');
+          console.error('Error importing questionnaire:', error);
         }
-        
-        onImport(questionnaire);
-        toast.success('Questionnaire imported successfully!');
-      } catch (error) {
-        toast.error('Error importing questionnaire');
-        console.error('Error importing questionnaire:', error);
       }
     },
     [onImport]
@@ -35,7 +36,7 @@ export function ImportQuestionnaire({ onImport }: ImportQuestionnaireProps) {
     accept: {
       'application/json': ['.json'],
     },
-    multiple: false,
+    multiple: true,
   });
 
   return (
