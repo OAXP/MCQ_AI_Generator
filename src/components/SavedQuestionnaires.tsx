@@ -1,12 +1,13 @@
 import { useQuizStore } from '../store/quizStore';
 import { SavedQuestionnaire } from '../types';
+import {QuestionnaireCard} from "./QuestionnaireCard.tsx";
 
 interface SavedQuestionnairesProps {
   onQuestionnaireSelect: (questions: SavedQuestionnaire) => void;
 }
 
 export function SavedQuestionnaires({ onQuestionnaireSelect }: SavedQuestionnairesProps) {
-  const { savedQuestionnaires, deleteQuestionnaire, clearAllQuestionnaires } = useQuizStore();
+  const { savedQuestionnaires, deleteQuestionnaire, clearAllQuestionnaires, renameQuestionnaire } = useQuizStore();
 
   const handleExport = (questionnaire: SavedQuestionnaire) => {
     const blob = new Blob([JSON.stringify(questionnaire, null, 2)], {
@@ -37,40 +38,18 @@ export function SavedQuestionnaires({ onQuestionnaireSelect }: SavedQuestionnair
           Clear All
         </button>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4 max-h-72 overflow-y-visible overflow-x-hidden [&::-webkit-scrollbar]:w-2
+      [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300
+      [&::-webkit-scrollbar-track]:!rounded [&::-webkit-scrollbar-thumb]:!rounded">
         {savedQuestionnaires.map((questionnaire) => (
-          <div
-            key={questionnaire.id}
-            className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
-          >
-            <div className="flex-1">
-              <h3 className="font-medium">{questionnaire.title}</h3>
-              <p className="text-sm text-gray-500">
-                {questionnaire.questions.length} questions •{' '}
-                {new Date(questionnaire.timestamp).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => onQuestionnaireSelect(questionnaire)}
-                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
-              >
-                Start
-              </button>
-              <button
-                onClick={() => handleExport(questionnaire)}
-                className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors"
-              >
-                Export
-              </button>
-              <button
-                onClick={() => deleteQuestionnaire(questionnaire.id)}
-                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
+          <QuestionnaireCard
+              key={questionnaire.id}
+              questionnaire={questionnaire}
+              onRename={renameQuestionnaire}
+              onSelect={onQuestionnaireSelect}
+              onExport={handleExport}
+              onDelete={deleteQuestionnaire}
+          />
         ))}
       </div>
     </div>

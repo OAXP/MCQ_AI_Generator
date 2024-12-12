@@ -9,6 +9,7 @@ interface QuizStore extends QuizState {
   resetQuiz: () => void;
   savedQuestionnaires: SavedQuestionnaire[];
   saveQuestionnaire: (title: string, questions: Question[]) => void;
+  renameQuestionnaire: (id: string, newTitle: string) => void;
   deleteQuestionnaire: (id: string) => void;
   clearAllQuestionnaires: () => void;
   calculateScore: () => {
@@ -55,6 +56,13 @@ export const useQuizStore = create<QuizStore>()(
               questions,
             },
           ],
+        })),
+
+      renameQuestionnaire: (id, newTitle) =>
+        set((state) => ({
+            savedQuestionnaires: state.savedQuestionnaires.map((q) =>
+                q.id === id ? { ...q, title: newTitle } : q
+            ),
         })),
 
       deleteQuestionnaire: (id) =>
