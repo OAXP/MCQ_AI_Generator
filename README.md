@@ -20,3 +20,8 @@ To use the project, you need to run the following command in the root folder of 
 npm start
 ```
 This will start the server and you can access the project by going to [http://localhost:5173](http://localhost:5173) in your browser.
+
+Result example (French) :
+![image](https://github.com/user-attachments/assets/48c992af-954c-4a81-9e1b-fbf8bf79a9ed)
+
+![image](https://github.com/user-attachments/assets/1c610a6d-f3f9-4a10-bc2c-5e631943ba6e)
