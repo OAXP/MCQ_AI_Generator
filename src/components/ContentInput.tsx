@@ -5,6 +5,7 @@ import { ContentSources } from './ContentSources';
 import { generateQuestions } from '../services/questionGenerator';
 import { useQuizStore } from '../store/quizStore';
 import toast from 'react-hot-toast';
+import {ComplexitySelector} from "./ComplexitySelector.tsx";
 
 interface ContentInputProps {
   onQuestionsGenerated: () => void;
@@ -20,6 +21,7 @@ interface ContentSource {
 export function ContentInput({ onQuestionsGenerated }: ContentInputProps) {
   const [sources, setSources] = useState<ContentSource[]>([]);
   const [numQuestions, setNumQuestions] = useState(5);
+  const [complexity, setComplexity] = useState(3);
   const [isGenerating, setIsGenerating] = useState(false);
   const { setQuestions, saveQuestionnaire } = useQuizStore();
 
@@ -53,7 +55,7 @@ export function ContentInput({ onQuestionsGenerated }: ContentInputProps) {
     try {
       setIsGenerating(true);
       const combinedContent = sources.map((source) => source.content).join('\n\n');
-      const questions = await generateQuestions(combinedContent, numQuestions);
+      const questions = await generateQuestions(combinedContent, numQuestions, complexity);
       setQuestions(questions);
       saveQuestionnaire(`Quiz ${new Date().toLocaleString()}`, questions);
       onQuestionsGenerated();
@@ -87,7 +89,7 @@ export function ContentInput({ onQuestionsGenerated }: ContentInputProps) {
             onClearSources={handleClearSources}
           />
 
-          <div className="mt-4">
+          <div className="space-y-6 pt-4 border-t">
             <label className="block text-sm font-medium text-gray-700">
               Number of questions to generate
             </label>
@@ -99,6 +101,8 @@ export function ContentInput({ onQuestionsGenerated }: ContentInputProps) {
               onChange={(e) => setNumQuestions(Number(e.target.value))}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
+
+            <ComplexitySelector value={complexity} onChange={setComplexity} />
           </div>
 
           <div className="flex items-center justify-between">

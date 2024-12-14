@@ -62,9 +62,18 @@ const schema: ResponseSchema = {
   ],
 };
 
+const complexityDescriptions = [
+    "basic and straightforward, suitable for beginners",
+    "easy with clear concepts",
+    "moderate difficulty with some challenging aspects",
+    "challenging, requiring deep understanding, similar to an exam question",
+    "advanced, testing mastery of the subject, similar to a final exam question",
+]
+
 export async function generateQuestions(
   content: string,
-  numQuestions: number
+  numQuestions: number,
+  complexity: number = 3
 ): Promise<Question[]> {
   const model = genAI.getGenerativeModel({
     model: 'gemini-1.5-flash',
@@ -79,8 +88,16 @@ export async function generateQuestions(
   - One option should be fully correct (1 point)
   - One or Two options should be partially correct (0.5 points)
   - Two or Three options should be incorrect (0 points)
+  - Randomize the placement of correct, partially correct, and incorrect options in each question.
+  ${complexity > 3 ? `
+  - Ensure that the correct, partially correct, and incorrect options vary in length and structure to avoid predictability.
+  - Avoid making the correct option consistently longer or more detailed than the others; aim for balance across all options.
+  - Ensure the complexity aligns with logical reasoning or conceptual difficulty, rather than option length.
+  - Review outputs to confirm no consistent patterns (e.g., longest option is always correct).
+  ` : ''}
   - Format the response as a JSON array of questions
   - Detect the language of the content and make the questions and the options the same language
+  - Complexity: ${complexityDescriptions[complexity - 1]}
   
   Content: ${content}`;
 

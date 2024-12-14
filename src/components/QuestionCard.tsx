@@ -44,7 +44,7 @@ export function QuestionCard({
             >
               <div className="flex items-center">
                 <div
-                  className={`w-4 h-4 rounded-full border mr-3 ${
+                  className={`w-4 h-4 aspect-square rounded-full border mr-3 ${
                     isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-300'
                   }`}
                 />
